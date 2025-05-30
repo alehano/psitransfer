@@ -45,7 +45,7 @@
                   strong {{ file.metadata.name }}
                   small.file-size(v-if="isFinite(file.size)") ({{ humanFileSize(file.size) }})
                 div(v-if="file.previewType === 'image'", style="margin: 10px 0;")
-                  img(:src="file.url", :alt="file.metadata.name", :style="`max-width: ${imageMaxWidth}px; max-height: ${imageMaxHeight}px; display: block; margin-top: 20px;`")
+                  img.inline-preview-img(:src="file.url", :alt="file.metadata.name", :style="imagePreviewStyle")
                 p {{ file.metadata.comment }}
 
     preview-modal(:preview="preview", :files="previewFiles", :max-size="config.maxPreviewSize", @close="preview=false")
@@ -113,6 +113,15 @@
       },
       imageMaxHeight() {
         return this.config.imagePreviewMaxHeight || 1024;
+      },
+      imagePreviewStyle() {
+        // Only apply on desktop, mobile handled by CSS
+        return {
+          maxWidth: this.imageMaxWidth + 'px',
+          maxHeight: this.imageMaxHeight + 'px',
+          display: 'block',
+          marginTop: '20px',
+        };
       }
     },
 
@@ -213,3 +222,19 @@
     }
   }
 </script>
+
+<style>
+.inline-preview-img {
+  display: block;
+  margin-top: 20px;
+  max-width: 100%;
+  height: auto;
+}
+@media (max-width: 600px) {
+  .inline-preview-img {
+    max-width: 100% !important;
+    width: auto;
+    height: auto;
+  }
+}
+</style>

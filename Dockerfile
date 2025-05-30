@@ -9,7 +9,7 @@ RUN apk add --no-cache tzdata
 
 WORKDIR /app
 
-ADD *.js package.json package-lock.json README.md /app/
+ADD *.js package.json yarn.lock README.md /app/
 ADD lib /app/lib
 ADD app /app/app
 ADD lang /app/lang
@@ -18,12 +18,12 @@ ADD public /app/public
 
 # Rebuild the frontend apps
 RUN cd app && \
-    NODE_ENV=dev npm ci && \
-    npm run build && \
+    NODE_ENV=dev yarn install --frozen-lockfile && \
+    yarn run build && \
     cd .. && \
     mkdir /data && \
     chown node /data && \
-    npm ci && \
+    yarn install --frozen-lockfile && \
     rm -rf app
 
 EXPOSE 3000
