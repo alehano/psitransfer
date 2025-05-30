@@ -44,6 +44,8 @@
                 p
                   strong {{ file.metadata.name }}
                   small.file-size(v-if="isFinite(file.size)") ({{ humanFileSize(file.size) }})
+                div(v-if="file.previewType === 'image'", style="margin: 10px 0;")
+                  img(:src="file.url", :alt="file.metadata.name", :style="`max-width: ${imageMaxWidth}px; max-height: ${imageMaxHeight}px; display: block; margin-top: 20px;`")
                 p {{ file.metadata.comment }}
 
     preview-modal(:preview="preview", :files="previewFiles", :max-size="config.maxPreviewSize", @close="preview=false")
@@ -97,8 +99,7 @@
         error: '',
         config: {},
         preview: false
-      }
-    },
+      }    },
 
     computed: {
       downloadsAvailable: function() {
@@ -106,8 +107,13 @@
       },
       previewFiles: function() {
         return this.files.filter(f => !!f.previewType);
+      },
+      imageMaxWidth() {
+        return this.config.imagePreviewMaxWidth || 1024;
+      },
+      imageMaxHeight() {
+        return this.config.imagePreviewMaxHeight || 1024;
       }
-
     },
 
     methods: {
